@@ -1,0 +1,55 @@
+﻿@model IEnumerable<BlogClubeLeitura.Models.Rating>
+
+@{
+    ViewData["Title"] = "Ratings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Ratings</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Stars</th>
+            <th>Book</th>
+            <th>Rating Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @for (var i = 0; i < 5; i++)
+                    {
+                        if (i < item.Stars)
+                        {
+                            <span class="fa fa-star checked"></span>
+                        }
+                        else
+                        {
+                            <span class="fa fa-star"></span>
+                        }
+                    }
+                </td>
+                <td>@item.Book?.Title</td>
+                <td>@item.RatingDate.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    .checked {
+        color: orange;
+    }
+</style>

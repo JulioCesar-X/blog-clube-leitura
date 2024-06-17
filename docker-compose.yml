@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  blogclubeleitura:
+    image: ${DOCKER_REGISTRY-}blogclubeleitura
+    build:
+      context: .
+      dockerfile: BlogClubeLeitura/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5020:5020"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Database=blogdb;Username=atec;Password=atec;
+      - ASPNETCORE_URLS=http://+:5000
+      - SEED_DATABASE=true
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: blogdb
+      POSTGRES_USER: atec
+      POSTGRES_PASSWORD: atec
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

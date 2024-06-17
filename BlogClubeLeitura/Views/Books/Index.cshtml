@@ -1,0 +1,89 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@model IEnumerable<BlogClubeLeitura.Models.Book>
+
+@{
+    ViewData["Title"] = "Books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Get search query from query string
+    var searchQuery = HttpContextAccessor.HttpContext?.Request.Query["searchQuery"];
+}
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="d-flex align-items-center">
+                <input type="text" id="searchQuery" class="form-control" placeholder="Buscar por título..." value="@searchQuery">
+                <button type="button" class="btn btn-primary" onclick="searchBooks()">Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model.Any())
+        {
+            // Display books if any are found
+            @foreach (var item in Model)
+            {
+                var averageRating = item.Ratings?.Average(r => r.Stars) ?? 0;
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="@item.CoverImagePath" class="card-img-top" alt="@item.Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Author</p>
+                            <div>
+                                @for (var i = 0; i < 5; i++)
+                                {
+                                    if (i < averageRating)
+                                    {
+                                        <span class="fa fa-star checked"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fa fa-star"></span>
+                                    }
+                                }
+                            </div>
+                            <a href="@Url.Action("Details", "Books", new { id = item.Id })" class="btn btn-primary mt-3">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">Nenhum livro encontrado.</div>
+        }
+    </div>
+</div>
+
+<script>
+    function searchBooks() {
+        var searchQuery = document.getElementById("searchQuery").value;
+        window.location.href = "@Url.Action("Search", "Books")?searchQuery=" + searchQuery;
+    }
+</script>
+
+<style>
+    .checked {
+        color: orange;
+    }
+
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card img {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>

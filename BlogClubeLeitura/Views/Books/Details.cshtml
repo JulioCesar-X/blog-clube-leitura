@@ -1,0 +1,83 @@
+﻿@model BlogClubeLeitura.Models.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center my-4">Book Details</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mb-4">
+                <img src="@Model.CoverImagePath" class="card-img-top" alt="@Model.Title">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Title</h5>
+                    <p class="card-text"><strong>Author:</strong> @Model.Author</p>
+                    <p class="card-text"><strong>Description:</strong> @Model.Description</p>
+                    <p class="card-text"><strong>Published Date:</strong> @Model.PublishedDate.ToShortDateString()</p>
+                </div>
+            </div>
+
+            <h3>Posts</h3>
+            @if (Model.Posts?.Any() ?? false)
+            {
+                <div class="list-group mb-4">
+                    @foreach (var post in Model.Posts)
+                    {
+                        <div class="list-group-item flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <img src="@post.User.ProfilePicture"
+                                         class="rounded-circle me-2" style="width: 40px; height: 40px;"
+                                         alt="@post.User?.UserName Profile Picture">
+                                    <h5 class="mb-1">@post.User?.UserName</h5>
+                                </div>
+                                <small>@post.PostedDate.ToShortDateString()</small>
+                            </div>
+                            <p class="mb-1">@post.Comment</p>
+                            <div>
+                                @if (post.Rating != null)
+                                {
+                                    @for (var i = 0; i < 5; i++)
+                                    {
+                                        if (i < post.Rating.Stars)
+                                        {
+                                            <span class="fa fa-star checked"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="fa fa-star"></span>
+                                        }
+                                    }
+                                }
+                            </div>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <form asp-action="DeletePost" method="post" class="mt-2">
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete Post</button>
+                                </form>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No posts available for this book.</p>
+            }
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Create", "Posts", new { bookId = Model.Id })" class="btn btn-primary">Add Post</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .checked {
+        color: orange;
+    }
+</style>
