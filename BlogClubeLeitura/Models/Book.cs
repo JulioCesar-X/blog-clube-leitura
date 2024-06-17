@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+//
 namespace BlogClubeLeitura.Models
 {
     public class Book
