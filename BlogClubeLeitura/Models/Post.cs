@@ -19,6 +19,6 @@ namespace BlogClubeLeitura.Models
 
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
-        public Rating? Rating { get; set; }
+        public Rating? Rating { get; set; } = new Rating();
     }
 }

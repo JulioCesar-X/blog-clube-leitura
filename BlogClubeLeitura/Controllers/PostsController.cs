@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogClubeLeitura.Data;
 using BlogClubeLeitura.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogClubeLeitura.Controllers
 {
-    [Authorize]
+    [Route("[controller]")]
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,39 +23,42 @@ namespace BlogClubeLeitura.Controllers
             _userManager = userManager;
         }
 
-        // GET: Posts/Create
-        public IActionResult Create(int bookId)
+        [HttpGet]
+        [Authorize]
+        [Route("")]
+        public async Task<IActionResult> Index(string month, string year)
         {
-            var post = new Post { BookId = bookId };
-            return View(post);
-        }
+            IQueryable<Post> postsQuery = _context.Posts.Include(p => p.Book).Include(p => p.User).Include(p => p.Rating);
 
-        // POST: Posts/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookId,Comment,Rating.Stars")] Post post)
-        {
-            if (ModelState.IsValid)
+            if (!User.IsInRole("Admin"))
             {
-                var userId = _userManager.GetUserId(User);
-                post.UserId = userId;
-                post.PostedDate = DateTime.UtcNow;
-                post.Rating = new Rating
-                {
-                    Stars = post.Rating.Stars,
-                    RatingDate = DateTime.UtcNow,
-                    UserId = userId,
-                    BookId = post.BookId
-                };
-                _context.Add(post);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Books", new { id = post.BookId });
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                postsQuery = postsQuery.Where(p => p.UserId == userId);
             }
-            return View(post);
+
+            if (!string.IsNullOrEmpty(month))
+            {
+                int monthNumber = int.Parse(month);
+                postsQuery = postsQuery.Where(p => p.PostedDate.Month == monthNumber);
+            }
+
+            if (!string.IsNullOrEmpty(year))
+            {
+                int yearNumber = int.Parse(year);
+                postsQuery = postsQuery.Where(p => p.PostedDate.Year == yearNumber);
+            }
+
+            var posts = await postsQuery.ToListAsync();
+
+            ViewData["month"] = month;
+            ViewData["year"] = year;
+
+            return View(posts);
         }
 
-        // GET: Posts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        [Route("Details/{id:int}")]
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -65,7 +70,6 @@ namespace BlogClubeLeitura.Controllers
                 .Include(p => p.User)
                 .Include(p => p.Rating)
                 .FirstOrDefaultAsync(m => m.Id == id);
-
             if (post == null)
             {
                 return NotFound();
@@ -74,10 +78,65 @@ namespace BlogClubeLeitura.Controllers
             return View(post);
         }
 
-        // POST: Posts/Edit/5
+        [HttpGet]
+        [Route("Create")]
+        public IActionResult Create(int bookId)
+        {
+            var post = new Post { BookId = bookId };
+            return View(post);
+        }
+
         [HttpPost]
+        [Route("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Comment,BookId,Rating.Stars")] Post post)
+        public async Task<IActionResult> Create([Bind("Comment,BookId")] Post post, int Stars)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                post.PostedDate = DateTime.UtcNow;
+                post.UserId = userId;
+
+                var rating = new Rating
+                {
+                    Stars = Stars,
+                    RatingDate = DateTime.UtcNow,
+                    UserId = userId,
+                    BookId = post.BookId
+                };
+
+                post.Rating = rating;
+
+                _context.Add(post);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", "Books", new { id = post.BookId });
+            }
+            return View(post);
+        }
+
+        [HttpGet]
+        [Route("Edit/{id:int}")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _context.Posts
+                .Include(p => p.Rating)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return View(post);
+        }
+
+        [HttpPost]
+        [Route("Edit/{id:int}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Comment,BookId")] Post post, int Stars)
         {
             if (id != post.Id)
             {
@@ -88,19 +147,40 @@ namespace BlogClubeLeitura.Controllers
             {
                 try
                 {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    post.PostedDate = DateTime.UtcNow;
+                    post.UserId = userId;
+
                     var existingPost = await _context.Posts
                         .Include(p => p.Rating)
-                        .FirstOrDefaultAsync(p => p.Id == id);
+                        .FirstOrDefaultAsync(p => p.Id == post.Id);
 
-                    if (existingPost == null)
+                    if (existingPost != null)
                     {
-                        return NotFound();
-                    }
+                        existingPost.Comment = post.Comment;
+                        existingPost.PostedDate = post.PostedDate;
+                        existingPost.UserId = post.UserId;
 
-                    existingPost.Comment = post.Comment;
-                    existingPost.Rating.Stars = post.Rating.Stars;
-                    _context.Update(existingPost);
-                    await _context.SaveChangesAsync();
+                        if (existingPost.Rating != null)
+                        {
+                            existingPost.Rating.Stars = Stars;
+                            existingPost.Rating.RatingDate = DateTime.UtcNow;
+                        }
+                        else
+                        {
+                            existingPost.Rating = new Rating
+                            {
+                                Stars = Stars,
+                                RatingDate = DateTime.UtcNow,
+                                UserId = userId,
+                                BookId = post.BookId,
+                                PostId = post.Id
+                            };
+                        }
+
+                        _context.Update(existingPost);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,7 +198,8 @@ namespace BlogClubeLeitura.Controllers
             return View(post);
         }
 
-        // GET: Posts/Delete/5
+        [HttpGet]
+        [Route("Delete/{id:int}")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,6 +208,8 @@ namespace BlogClubeLeitura.Controllers
             }
 
             var post = await _context.Posts
+                .Include(p => p.Book)
+                .Include(p => p.User)
                 .Include(p => p.Rating)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
@@ -137,8 +220,8 @@ namespace BlogClubeLeitura.Controllers
             return View(post);
         }
 
-        // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Route("DeleteConfirmed/{id:int}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -148,7 +231,7 @@ namespace BlogClubeLeitura.Controllers
                 _context.Posts.Remove(post);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Index", "Books");
+            return RedirectToAction(nameof(Index));
         }
 
         private bool PostExists(int id)

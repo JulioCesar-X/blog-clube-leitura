@@ -1,18 +1,19 @@
 ﻿@model BlogClubeLeitura.Models.Post
 
 @{
-    ViewData["Title"] = "Create Post";
+    ViewData["Title"] = "Edit Post";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="text-center my-4">Create Post</h1>
+<h1 class="text-center my-4">Edit Post</h1>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card h-100">
                 <div class="card-body">
-                    <form asp-action="Create" method="post">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
                         <div class="form-group">
                             <label asp-for="Comment" class="control-label">Comment</label>
                             <textarea asp-for="Comment" class="form-control"></textarea>
@@ -21,31 +22,31 @@
                         <div class="form-group">
                             <label asp-for="Rating.Stars" class="control-label">Rating</label>
                             <div class="star-rating">
-                                <input type="radio" id="star5" name="Stars" value="5" />
+                                <input type="radio" id="star5" name="Stars" value="5" @(Model.Rating?.Stars == 5 ? "checked" : "") />
                                 <label for="star5" title="5 stars">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
                                     </svg>
                                 </label>
-                                <input type="radio" id="star4" name="Stars" value="4" />
+                                <input type="radio" id="star4" name="Stars" value="4" @(Model.Rating?.Stars == 4 ? "checked" : "") />
                                 <label for="star4" title="4 stars">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
                                     </svg>
                                 </label>
-                                <input type="radio" id="star3" name="Stars" value="3" />
+                                <input type="radio" id="star3" name="Stars" value="3" @(Model.Rating?.Stars == 3 ? "checked" : "") />
                                 <label for="star3" title="3 stars">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
                                     </svg>
                                 </label>
-                                <input type="radio" id="star2" name="Stars" value="2" />
+                                <input type="radio" id="star2" name="Stars" value="2" @(Model.Rating?.Stars == 2 ? "checked" : "") />
                                 <label for="star2" title="2 stars">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
                                     </svg>
                                 </label>
-                                <input type="radio" id="star1" name="Stars" value="1" />
+                                <input type="radio" id="star1" name="Stars" value="1" @(Model.Rating?.Stars == 1 ? "checked" : "") />
                                 <label for="star1" title="1 star">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
@@ -59,7 +60,7 @@
                             <input type="hidden" asp-for="UserId" />
                         </div>
                         <div class="form-group text-center">
-                            <input type="submit" value="Create" class="btn btn-primary" />
+                            <input type="submit" value="Save" class="btn btn-primary" />
                             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
                         </div>
                     </form>

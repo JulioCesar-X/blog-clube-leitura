@@ -3,60 +3,168 @@
 @{
     ViewData["Title"] = "Posts";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedMonth = ViewData["month"]?.ToString() ?? "";
+    var year = ViewData["year"]?.ToString() ?? "";
 }
 
-<h1>Posts</h1>
+<h1 class="text-center my-4">Posts</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Comment</th>
-            <th>Book</th>
-            <th>User</th>
-            <th>Posted Date</th>
-            <th>Rating</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Comment</td>
-                <td>@item.Book?.Title</td>
-                <td>@item.User?.UserName</td>
-                <td>@item.PostedDate.ToShortDateString()</td>
-                <td>
-                    @if (item.Rating != null)
-                    {
-                        @for (var i = 0; i < 5; i++)
+<div class="container">
+    <div class="row mb-3 justify-content-center">
+        <div class="col-lg-8">
+            <form asp-action="Index" method="get" class="input-group search-form">
+                <select name="month" class="form-control">
+                    <option value="">Select Month</option>
+                    @{
+                        var months = new[] 
                         {
-                            if (i < item.Rating.Stars)
-                            {
-                                <span class="fa fa-star checked"></span>
-                            }
-                            else
-                            {
-                                <span class="fa fa-star"></span>
-                            }
+                            new { Value = "01", Text = "January" },
+                            new { Value = "02", Text = "February" },
+                            new { Value = "03", Text = "March" },
+                            new { Value = "04", Text = "April" },
+                            new { Value = "05", Text = "May" },
+                            new { Value = "06", Text = "June" },
+                            new { Value = "07", Text = "July" },
+                            new { Value = "08", Text = "August" },
+                            new { Value = "09", Text = "September" },
+                            new { Value = "10", Text = "October" },
+                            new { Value = "11", Text = "November" },
+                            new { Value = "12", Text = "December" }
+                        };
+
+                        foreach (var month in months)
+                        {
+                            <option value="@(selectedMonth == month.Value ? month.Value : "")">
+                                @month.Text
+                            </option>
                         }
                     }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </select>
+                <input type="text" name="year" class="form-control" placeholder="Year (e.g., 2024)" value="@year">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+    </div>
 
-<style>
-    .checked {
-        color: orange;
-    }
-</style>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table" style="background-color: rgba(0, 123, 255, 0.1);">
+                    <thead class="thead-dark" style="position: sticky; top: 0; background-color: rgba(0, 123, 255, 0.1);">
+                        <tr>
+                            <th>Comment</th>
+                            <th>Book</th>
+                            <th>User</th>
+                            <th>Posted Date</th>
+                            <th>Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Comment</td>
+                                <td>@item.Book?.Title</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="#">
+                                            <img src="@item.User?.ProfilePicture" class="rounded-circle me-2" style="width: 40px; height: 40px;" alt="@item.User?.UserName's Profile Picture">
+                                        </a>
+                                        <a href="#">@item.User?.UserName</a>
+                                    </div>
+                                </td>
+                                <td>@item.PostedDate.ToShortDateString()</td>
+                                <td>
+                                    @if (item.Rating != null)
+                                    {
+                                        <div class="star-rating">
+                                            @for (var i = 0; i < item.Rating.Stars; i++)
+                                            {
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill star-icon" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .checked {
+            color: orange;
+        }
+
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        thead.thead-dark th {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        tbody tr {
+            color: #fff;
+        }
+
+        tbody a {
+            color: #fff;
+        }
+
+        .rounded-circle {
+            border: 2px solid #fff;
+        }
+
+        .star-icon {
+            color: #ffc107; /* Cor dourada para as estrelas */
+        }
+
+        .search-form {
+            background: rgba(0, 123, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+
+            .search-form:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+                transition: background 0.9s ease-in-out;
+            }
+
+        .form-control {
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+            .form-control:focus {
+                box-shadow: none;
+            }
+
+        .btn-primary {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #fff;
+                border: none;
+                transition: background 0.9s ease-in-out;
+                color: #000000;
+            }
+    </style>
+}

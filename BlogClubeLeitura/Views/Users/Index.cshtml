@@ -1,0 +1,88 @@
+﻿@model IEnumerable<BlogClubeLeitura.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userRoles = ViewBag.UserRoles as Dictionary<string, List<string>>;
+    var roles = ViewBag.Roles as List<string>;
+}
+
+<h1 class="text-center my-4">Manage Users</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table" style="background-color: rgba(0, 123, 255, 0.1);">
+                    <thead class="thead-dark" style="position: sticky; top: 0; background-color: rgba(0, 123, 255, 0.1);">
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Change Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    @foreach (var role in userRoles[user.Id])
+                                    {
+                                        <span class="badge bg-info text-dark">@role</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form asp-action="UpdateRole" method="post" class="d-inline">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <select name="newRole" class="form-select form-select-sm" onchange="this.form.submit()">
+                                            @foreach (var role in roles)
+                                            {
+                                                <option value="@role" selected="@(userRoles[user.Id].Contains(role) ? "selected" : "")">@role</option>
+                                            }
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form asp-action="Delete" method="post" class="d-inline">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        thead.thead-dark th {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        tbody tr {
+            color: #fff;
+        }
+
+        tbody a {
+            color: #fff;
+        }
+
+        .badge {
+            margin-right: 5px;
+        }
+    </style>
+}

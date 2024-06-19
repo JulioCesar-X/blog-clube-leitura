@@ -18,12 +18,31 @@ namespace BlogClubeLeitura.Controllers
         }
 
         // GET: Ratings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchQuery, int pageNumber = 1, int pageSize = 9)
         {
-            var ratings = _context.Ratings.Include(r => r.Book).Include(r => r.User);
-            return View(await ratings.ToListAsync());
-        }
+            var ratingsQuery = _context.Ratings
+                .Include(r => r.Book)
+                .GroupBy(r => r.Book)
+                .Select(g => new BookRatingsViewModel
+                {
+                    BookTitle = g.Key.Title,
+                    BookId = g.Key.Id,
+                    FiveStarsCount = g.Count(r => r.Stars == 5),
+                    FourStarsCount = g.Count(r => r.Stars == 4),
+                    ThreeStarsCount = g.Count(r => r.Stars == 3),
+                    TwoStarsCount = g.Count(r => r.Stars == 2),
+                    OneStarCount = g.Count(r => r.Stars == 1),
+                    CoverImagePath = g.Key.CoverImagePath
+                }).AsQueryable();
 
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                ratingsQuery = ratingsQuery.Where(b => b.BookTitle.ToLower().Contains(searchQuery.ToLower()));
+            }
+
+            var pagedRatings = await PaginatedList<BookRatingsViewModel>.CreateAsync(ratingsQuery, pageNumber, pageSize);
+            return View(pagedRatings);
+        }
         // GET: Ratings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -67,6 +86,18 @@ namespace BlogClubeLeitura.Controllers
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", rating.UserId);
             return View(rating);
         }
+        public int GetModeRating(int bookId)
+        {
+            var ratings = _context.Ratings.Where(r => r.BookId == bookId).ToList();
+            if (ratings == null || !ratings.Any())
+                return 0;
+
+            var mode = ratings.GroupBy(r => r.Stars)
+                              .OrderByDescending(g => g.Count())
+                              .First().Key;
+
+            return mode ?? 0;
+        }
 
         // GET: Ratings/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -85,6 +116,7 @@ namespace BlogClubeLeitura.Controllers
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", rating.UserId);
             return View(rating);
         }
+
 
         // POST: Ratings/Edit/5
         [HttpPost]
@@ -160,4 +192,7 @@ namespace BlogClubeLeitura.Controllers
             return _context.Ratings.Any(e => e.Id == id);
         }
     }
+
+    
+    
 }

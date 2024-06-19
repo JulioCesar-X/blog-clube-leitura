@@ -8,37 +8,42 @@
 <h1 class="text-center my-4">Create Book</h1>
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <form asp-action="Create">
-                <div class="form-group">
-                    <label asp-for="Title" class="control-label"></label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Author" class="control-label"></label>
-                    <input asp-for="Author" class="form-control" />
-                    <span asp-validation-for="Author" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="CoverImagePath" class="control-label"></label>
-                    <input asp-for="CoverImagePath" class="form-control" />
-                    <span asp-validation-for="CoverImagePath" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="PublishedDate" class="control-label"></label>
-                    <input asp-for="PublishedDate" class="form-control" />
-                    <span asp-validation-for="PublishedDate" class="text-danger"></span>
-                </div>
-                <div class="form-group text-center">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div class="card h-100">
+                    <img id="coverPreview" src="/images/books/default.png" class="card-img-top" alt="Book Cover Preview">
+                    <div class="card-body">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Title" class="form-control" placeholder="Title" />
+                            <label asp-for="Title">Title</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Author" class="form-control" placeholder="Author" />
+                            <label asp-for="Author">Author</label>
+                            <span asp-validation-for="Author" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Description" class="form-control" placeholder="Description" style="height: 100px;"></textarea>
+                            <label asp-for="Description">Description</label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="PublishedDate" class="form-control" placeholder="Published Date" />
+                            <label asp-for="PublishedDate">Published Date</label>
+                            <span asp-validation-for="PublishedDate" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CoverImagePath" class="form-label">Cover Image</label>
+                            <input asp-for="CoverImagePath" class="form-control" type="hidden" />
+                            <input type="file" name="CoverImage" class="form-control" onchange="previewImage(event)" />
+                        </div>
+                        <div class="form-group text-center">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -46,7 +51,49 @@
 </div>
 
 @section Scripts {
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('coverPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}
+
+@section Styles {
+    <style>
+        .card {
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 123, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: transform 0.6s ease-out;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title, .card-text {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: #ffffff;
+        }
+    </style>
 }

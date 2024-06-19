@@ -1,22 +1,90 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+html, body {
+    height: 100%; /* Garantir que o corpo cubra toda a altura da página */
+    margin: 0; /* Remover margens padrão */
 }
 
 body {
-  margin-bottom: 60px;
+    display: flex;
+    flex-direction: column; /* Estrutura flexível para organizar o cabeçalho, conteúdo principal e rodapé */
+    font-family: 'Gordita', Helvetica, sans-serif;
+    background-image: url('/images/fundo.jpg');
+    background-size: cover;
+    background-attachment: fixed; /* Fixar a imagem de fundo para não rolar com a página */
+    padding-top: 60px;
+}
+
+.navbar {
+    position: fixed; /* Deixa a barra de navegação fixa no topo */
+    width: 100%; /* Garante cobertura total da largura */
+    z-index: 1000; /* Certifique-se de que está acima de outros elementos */
+
+}
+
+.footer {
+    margin-top: auto; /* Empurra o rodapé para a parte inferior */
+    text-align: center;
+    color:#fff;
+}
+
+h1 {
+    font-size: 5.5rem;
+    font-weight: bold;
+    color: #ffff
+}
+
+h3,h2 {
+    color: #fff;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.container {
+    padding-top: 70px; /* Espaço para a navbar não sobrepor o conteúdo */
+    width: 100%;
+    max-width: 100%; /* Impede a extensão além das bordas */
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+.login-container {
+    display: flex;
+    justify-content: center; /* Alinha horizontalmente ao centro */
+    align-items: center; /* Alinha verticalmente ao centro */
+    min-height: 100vh;  Altura mínima do viewport 
+
+}
+
+.login-form {
+    width: 100%; /* Ocupa 100% da largura da coluna */
+    max-width: 50%; /* Largura máxima do formulário */
+    padding: 15px;
+    margin: auto;
+    
+}
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.register-form {
+    width: 100%;
+    max-width: 50%;
+    padding: 20px;
+
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente em contêineres flex */
+    justify-content: center; /* Opcional, se você também quiser centralizar verticalmente */
 }

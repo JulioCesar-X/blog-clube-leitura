@@ -1,55 +1,179 @@
-﻿@model IEnumerable<BlogClubeLeitura.Models.Rating>
+﻿@model BlogClubeLeitura.Models.PaginatedList<BlogClubeLeitura.Models.BookRatingsViewModel>
 
 @{
-    ViewData["Title"] = "Ratings";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Ratings Dashboard";
+    var searchQuery = Context.Request.Query["searchQuery"].ToString();
 }
 
-<h1>Ratings</h1>
+<div class="container">
+    <h1 class="text-center my-4" style="color: white;">Ratings Dashboard</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Stars</th>
-            <th>Book</th>
-            <th>Rating Date</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <div class="row mb-3 justify-content-center">
+        <div class="col-lg-8">
+            <form asp-action="Index" method="get" class="input-group search-form">
+                <input type="text" name="searchQuery" class="form-control" placeholder="Search by title..." value="@searchQuery">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var book in Model)
         {
-            <tr>
-                <td>
-                    @for (var i = 0; i < 5; i++)
-                    {
-                        if (i < item.Stars)
-                        {
-                            <span class="fa fa-star checked"></span>
-                        }
-                        else
-                        {
-                            <span class="fa fa-star"></span>
-                        }
-                    }
-                </td>
-                <td>@item.Book?.Title</td>
-                <td>@item.RatingDate.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
+            <div class="col-md-6 mb-4">
+                <div class="card" style="background: rgba(0, 123, 255, 0.1);">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <img src="@book.CoverImagePath" alt="@book.BookTitle" class="img-thumbnail" style="width: 150px; height: 200px; object-fit: cover;">
+                            </div>
+                            <div>
+                                <h2 style="color: white;">@book.BookTitle</h2>
+                                <canvas id="chart-@book.BookId"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var ctx = document.getElementById('chart-@book.BookId').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['5 stars', '4 stars', '3 stars', '2 stars', '1 star'],
+                                datasets: [{
+                                    label: 'Number of Ratings',
+                                    data: [@book.FiveStarsCount, @book.FourStarsCount, @book.ThreeStarsCount, @book.TwoStarsCount, @book.OneStarCount],
+                                    backgroundColor: [
+                                        'rgba(255, 206, 86, 0.9)',
+                                        'rgba(54, 162, 235, 0.9)',
+                                        'rgba(75, 192, 192, 0.9)',
+                                        'rgba(153, 102, 255, 0.9)',
+                                        'rgba(255, 99, 132, 0.9)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 99, 132, 1)'
+                                    ],
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: 'white',
+                                            font: {
+                                                size: 14,
+                                                weight: 'bold'
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: 'white',
+                                            font: {
+                                                size: 14,
+                                                weight: 'bold'
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: 'white',
+                                            font: {
+                                                size: 16,
+                                                weight: 'bold'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                </script>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
 
-<style>
-    .checked {
-        color: orange;
-    }
-</style>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            @await Html.PartialAsync("_PaginationPartial", Model.ToDynamicList())
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+}
+
+@section Styles {
+    <style>
+        .card {
+            background: rgba(0, 123, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+                transition: background 0.9s ease-in-out;
+            }
+
+        .img-thumbnail {
+            border: 2px solid #ddd;
+            padding: 5px;
+            background-color: #fff;
+        }
+
+        .search-form {
+            background: rgba(0, 123, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+
+            .search-form:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+                transition: background 0.9s ease-in-out;
+            }
+
+        .form-control {
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+            .form-control:focus {
+                box-shadow: none;
+            }
+
+        .btn-primary {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #fff;
+                border: none;
+                transition: background 0.9s ease-in-out;
+                color: #000000;
+            }
+
+        .pagination .page-link {
+            color: #007bff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+}

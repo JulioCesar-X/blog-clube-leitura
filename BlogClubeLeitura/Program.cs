@@ -14,7 +14,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.ListenAnyIP(5000);
 });
 
-// Adicione serviços ao container
+// Adicione serviï¿½os ao container
 ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
@@ -25,7 +25,7 @@ ConfigureMiddleware(app);
 // Configura as rotas
 ConfigureRoutes(app);
 
-// Popula a base de dados, se necessário
+// Popula a base de dados, se necessï¿½rio
 SeedDatabase(app);
 
 app.Run();
@@ -35,8 +35,12 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-    services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false; // Desativa a necessidade de confirmaÃ§Ã£o de email
+    })
         .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders()
         .AddDefaultUI();
 
     services.AddControllersWithViews();
@@ -47,12 +51,12 @@ void ConfigureMiddleware(WebApplication app)
 {
     if (app.Environment.IsDevelopment())
     {
-        app.UseDeveloperExceptionPage(); // Páginas de erro detalhadas em desenvolvimento
-        app.UseMigrationsEndPoint(); // Endpoint para aplicar migrações do EF Core
+        app.UseDeveloperExceptionPage(); // Pï¿½ginas de erro detalhadas em desenvolvimento
+        app.UseMigrationsEndPoint(); // Endpoint para aplicar migraï¿½ï¿½es do EF Core
     }
     else
     {
-        app.UseExceptionHandler("/Home/Error"); // Página de erro padrão em produção
+        app.UseExceptionHandler("/Home/Error"); // Pï¿½gina de erro padrï¿½o em produï¿½ï¿½o
         app.UseHsts(); // HTTP Strict Transport Security
     }
 
@@ -83,7 +87,7 @@ void ConfigureRoutes(WebApplication app)
         name: "ratings",
         pattern: "Ratings/{action=Index}/{id?}",
         defaults: new { controller = "Ratings" });
-    app.MapRazorPages(); // Necessário para as Razor Pages do Identity
+    app.MapRazorPages(); // Necessï¿½rio para as Razor Pages do Identity
 }
 
 void SeedDatabase(WebApplication app)
