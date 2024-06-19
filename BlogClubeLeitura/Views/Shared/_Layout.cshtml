@@ -6,24 +6,30 @@
     <title>@ViewData["Title"] - BlogClubeLeitura</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BlogClubeLeitura.styles.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
 </head>
-<body style="background-image: url('/images/fundo.jpg'); background-size: cover; height: 100vh;">
-    @RenderSection("Header", required: false)
-    <div class="container">
-        <main role="main" class="pb-3">
+<body>
+    <div class="background-image" ;
+         background-size: cover;
+         height: 100vh;
+         background-clip: content-box;">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <partial name="_Header" />
+        }
+
+        <main role="main">
             @RenderBody()
         </main>
+
+        <partial name="_Footer" />
+
     </div>
 
-    <footer class="footer text-muted">
-        <div class="container">
-            &copy; 2024 - BlogClubeLeitura - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

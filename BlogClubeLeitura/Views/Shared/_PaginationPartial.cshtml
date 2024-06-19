@@ -1,0 +1,38 @@
+﻿@model BlogClubeLeitura.Models.PaginatedList<dynamic>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { pageNumber = Model.PageIndex - 1 })">Previous</a>
+        </li>
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.PageIndex || i == 1 || i == Model.TotalPages || (i >= Model.PageIndex - 2 && i <= Model.PageIndex + 2))
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { pageNumber = i })">@i</a>
+                </li>
+            }
+            else if (i == Model.PageIndex - 3 || i == Model.PageIndex + 3)
+            {
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            }
+        }
+        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+            <a class="page-link" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), new { pageNumber = Model.PageIndex + 1 })">Next</a>
+        </li>
+    </ul>
+</nav>
+
+@section Styles {
+    <style>
+        .pagination .page-link {
+            color: #007bff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+}

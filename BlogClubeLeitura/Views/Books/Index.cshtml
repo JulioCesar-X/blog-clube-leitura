@@ -1,89 +1,174 @@
 ﻿@inject IHttpContextAccessor HttpContextAccessor
-
-@model IEnumerable<BlogClubeLeitura.Models.Book>
+@model BlogClubeLeitura.Models.PaginatedList<BlogClubeLeitura.Models.Book>
 
 @{
-    ViewData["Title"] = "Books";
+    ViewData["Title"] = "Livros";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    // Get search query from query string
-    var searchQuery = HttpContextAccessor.HttpContext?.Request.Query["searchQuery"];
+    var searchQuery = ViewData["searchQuery"]?.ToString() ?? "";
 }
 
 <div class="container">
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <div class="d-flex align-items-center">
-                <input type="text" id="searchQuery" class="form-control" placeholder="Buscar por título..." value="@searchQuery">
-                <button type="button" class="btn btn-primary" onclick="searchBooks()">Buscar</button>
-            </div>
+    <div class="row mb-3 justify-content-center">
+        <div class="col-lg-8">
+            <form asp-action="Index" method="get" class="input-group search-form">
+                <input type="text" name="searchQuery" class="form-control" placeholder="Search by title..." value="@searchQuery">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
         </div>
     </div>
 
-    <div class="row">
-        @if (Model.Any())
+    <div class="row justify-content-center">
+        @if (User.IsInRole("Admin"))
         {
-            // Display books if any are found
-            @foreach (var item in Model)
-            {
-                var averageRating = item.Ratings?.Average(r => r.Stars) ?? 0;
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="@item.CoverImagePath" class="card-img-top" alt="@item.Title">
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Title</h5>
-                            <p class="card-text">@item.Author</p>
-                            <div>
-                                @for (var i = 0; i < 5; i++)
-                                {
-                                    if (i < averageRating)
-                                    {
-                                        <span class="fa fa-star checked"></span>
-                                    }
-                                    else
-                                    {
-                                        <span class="fa fa-star"></span>
-                                    }
-                                }
-                            </div>
-                            <a href="@Url.Action("Details", "Books", new { id = item.Id })" class="btn btn-primary mt-3">Ver Detalhes</a>
-                        </div>
+            <div class="col-md-4 col-lg-3 mb-4 position-relative">
+                <div class="card h-100 create-card" onclick="window.location.href='@Url.Action("Create", "Books")'">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <h1 class="display-1">+</h1>
+                        <h5 class="card-title">Adicionar Novo Livro</h5>
                     </div>
                 </div>
-            }
+            </div>
         }
-        else
+        @foreach (var book in Model)
         {
-            <div class="alert alert-info">Nenhum livro encontrado.</div>
+            <div class="col-md-4 col-lg-3 mb-4 position-relative">
+                <div class="card h-100" onclick="window.location.href='@Url.Action("Details", "Books", new { id = book.Id })'">
+                    <img src="@book.CoverImagePath" class="card-img-top" alt="@book.Title">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">@book.Title</h5>
+                            <div class="star-rating">
+                                @for (var i = 0; i < book.ModeRating; i++)
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill star-icon" viewBox="0 0 16 16">
+                                        <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
+                                    </svg>
+                                }
+                            </div>
+                        </div>
+                        <p class="card-text">@book.Author</p>
+                        <p class="card-text">@book.PublishedDate.ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <form asp-action="Delete" asp-route-id="@book.Id" method="post" class="delete-form">
+                        <button type="submit" class="btn btn-danger btn-delete">×</button>
+                    </form>
+                }
+            </div>
         }
+    </div>
+
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            @await Html.PartialAsync("_PaginationPartial", Model.ToDynamicList())
+        </div>
     </div>
 </div>
 
-<script>
-    function searchBooks() {
-        var searchQuery = document.getElementById("searchQuery").value;
-        window.location.href = "@Url.Action("Search", "Books")?searchQuery=" + searchQuery;
-    }
-</script>
+@section Styles {
+    <style>
+        .btn-delete {
+            position: absolute;
+            top: -21px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            padding: 0;
+            font-size: 18px;
+            line-height: 30px;
+            text-align: center;
+            border: none;
+        }
 
-<style>
-    .checked {
-        color: orange;
-    }
+        .delete-form {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
 
-    .card {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        overflow: hidden;
-        transition: transform 0.2s;
-    }
+        .card {
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 123, 255, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+        }
 
-    .card:hover {
-        transform: scale(1.05);
-    }
+            .card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+                background: rgba(0, 0, 0, 0.8);
+                transition: background 0.9s ease-out;
+            }
 
-    .card img {
-        height: 200px;
-        object-fit: cover;
-    }
-</style>
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title, .card-text {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: #ffffff;
+        }
+
+        .create-card {
+            background: rgba(0, 123, 255, 0.1);
+            text-align: center;
+        }
+
+            .create-card:hover {
+                background: rgba(0, 0, 0, 0.8);
+            }
+
+        .star-icon {
+            color: #ffc107;
+        }
+
+        .search-form {
+            background: rgba(0, 123, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+
+            .search-form:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+                transition: background 0.9s ease-in-out;
+            }
+
+        .form-control {
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+            .form-control:focus {
+                box-shadow: none;
+            }
+
+        .btn-primary {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #fff;
+                border: none;
+                transition: background 0.9s ease-in-out;
+                color: #000000;
+            }
+    </style>
+}

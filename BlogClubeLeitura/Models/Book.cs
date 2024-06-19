@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 //
 namespace BlogClubeLeitura.Models
 {
@@ -18,6 +19,9 @@ namespace BlogClubeLeitura.Models
             get => _publishedDate;
             set => _publishedDate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
+
+        [NotMapped]
+        public int? ModeRating { get; set; }
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     }

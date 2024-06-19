@@ -8,37 +8,42 @@
 <h1 class="text-center my-4">Edit Book</h1>
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <form asp-action="Edit">
-                <div class="form-group">
-                    <label asp-for="Title" class="control-label"></label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Author" class="control-label"></label>
-                    <input asp-for="Author" class="form-control" />
-                    <span asp-validation-for="Author" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="CoverImagePath" class="control-label"></label>
-                    <input asp-for="CoverImagePath" class="form-control" />
-                    <span asp-validation-for="CoverImagePath" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="PublishedDate" class="control-label"></label>
-                    <input asp-for="PublishedDate" class="form-control" />
-                    <span asp-validation-for="PublishedDate" class="text-danger"></span>
-                </div>
-                <div class="form-group text-center">
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div class="card h-100">
+                    <img id="coverPreview" src="@Model.CoverImagePath" class="card-img-top" alt="Book Cover Preview">
+                    <div class="card-body">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Title" class="form-control" />
+                            <label asp-for="Title">Title</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Author" class="form-control" />
+                            <label asp-for="Author">Author</label>
+                            <span asp-validation-for="Author" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                            <label asp-for="Description">Description</label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="PublishedDate" class="form-control" />
+                            <label asp-for="PublishedDate">Published Date</label>
+                            <span asp-validation-for="PublishedDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="CoverImagePath" class="form-label">Cover Image</label>
+                            <input asp-for="CoverImagePath" class="form-control" type="hidden" />
+                            <input type="file" name="CoverImage" class="form-control" onchange="previewImage(event)" />
+                        </div>
+                        <div class="form-group text-center mt-4">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -46,7 +51,55 @@
 </div>
 
 @section Scripts {
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('coverPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+}
+
+@section Styles {
+    <style>
+        .card {
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: transform 0.6s ease-out;
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .form-floating > .form-control {
+            height: calc(3.5rem + 2px); /* Ajuste a altura dos inputs flutuantes */
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem; /* Ajuste o padding dos labels flutuantes */
+        }
+
+        .form-group.mb-3 label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
 }
