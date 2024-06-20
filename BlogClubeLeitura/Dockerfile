@@ -1,24 +1,32 @@
-# Imagem SDK para desenvolvimento
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
+# Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy the project files and restore dependencies
+COPY ["BlogClubeLeitura.csproj", "./"]
+RUN dotnet restore "BlogClubeLeitura.csproj"
+
+# Copy the remaining project files and build the application
+COPY . .
+RUN dotnet build "BlogClubeLeitura.csproj" -c Release -o /app/build
+
+# Publish the application
+RUN dotnet publish "BlogClubeLeitura.csproj" -c Release -o /app/publish
+
+# Stage 2: Create the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-# Copiar o conteúdo do diretório atual para o diretório /app no container
-COPY ./BlogClubeLeitura/ .
+# Copy the published files from the build stage
+COPY --from=build /app/publish .
 
-COPY BlogClubeLeitura/entrypoint.sh /entrypoint.sh
-# Dar permissões de execução ao script de entrypoint
-RUN chmod +x /entrypoint.sh
+# Install netcat for waiting for database
+RUN apt-get update && apt-get install -y netcat-openbsd
 
-# Instalar dependências necessárias, incluindo netcat para espera de DB e EF Core CLI
-RUN apt-get update && apt-get install -y netcat-openbsd && \
-    dotnet tool install --global dotnet-ef
+# Expose the port
+EXPOSE 80
+EXPOSE 443
 
-# Configurar PATH para incluir ferramentas globais do .NET
-ENV PATH="${PATH}:/root/.dotnet/tools"
-# Converter quebras de linha para LF e remover BOM
-RUN sed -i '1 s/^\xEF\xBB\xBF//' /entrypoint.sh && \
-    sed -i 's/\r$//' /entrypoint.sh
-
-
-# Definir o entrypoint para o script
-ENTRYPOINT ["/entrypoint.sh"]
+# Define the entrypoint
+CMD /bin/bash -c 'while ! nc -z "postgres.railway.internal" 5432; do echo "Waiting for the database..."; sleep 1; done; \
+  if [ "$SEED_DATABASE" = "true" ]; then dotnet ef database update; dotnet BlogClubeLeitura.dll; else dotnet BlogClubeLeitura.dll; fi'
