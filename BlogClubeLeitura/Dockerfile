@@ -2,13 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy the project files and restore dependencies
-COPY BlogClubeLeitura/BlogClubeLeitura.csproj ./BlogClubeLeitura/
-WORKDIR /src/BlogClubeLeitura
-RUN dotnet restore
+# Copy the project file and restore dependencies
+COPY ["BlogClubeLeitura.csproj", "."]
+RUN dotnet restore "BlogClubeLeitura.csproj"
 
 # Copy the remaining project files and build the application
-COPY BlogClubeLeitura/. .
+COPY . .
 RUN dotnet build -c Release -o /app/build
 
 # Publish the application
@@ -30,4 +29,4 @@ EXPOSE 443
 
 # Define the entrypoint
 CMD /bin/bash -c 'while ! nc -z "postgres.railway.internal" 5432; do echo "Waiting for the database..."; sleep 1; done; \
-  if [ "$SEED_DATABASE" = "true" ]; then dotnet ef database update; dotnet BlogClubeLeitura.dll; else dotnet BlogClubeLeitura.dll; fi'
+  if [ "$SEED_DATABASE" = "true" ]; then dotnet ef database update; fi; dotnet BlogClubeLeitura.dll'
