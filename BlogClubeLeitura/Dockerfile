@@ -3,15 +3,16 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy the project files and restore dependencies
-COPY ["BlogClubeLeitura.csproj", "./"]
-RUN dotnet restore "BlogClubeLeitura.csproj"
+COPY BlogClubeLeitura/BlogClubeLeitura.csproj ./BlogClubeLeitura/
+WORKDIR /src/BlogClubeLeitura
+RUN dotnet restore
 
 # Copy the remaining project files and build the application
-COPY . .
-RUN dotnet build "BlogClubeLeitura.csproj" -c Release -o /app/build
+COPY BlogClubeLeitura/. .
+RUN dotnet build -c Release -o /app/build
 
 # Publish the application
-RUN dotnet publish "BlogClubeLeitura.csproj" -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/publish
 
 # Stage 2: Create the runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
