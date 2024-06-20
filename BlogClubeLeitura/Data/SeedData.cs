@@ -99,25 +99,28 @@ namespace BlogClubeLeitura.Data
                 }
             }
 
-            // Normal User
-            var normalUser = new ApplicationUser
+            // Normal Users
+            for (int i = 1; i <= 10; i++)
             {
-                UserName = "user@blog.com",
-                Email = "user@blog.com",
-                ProfilePicture = "/images/profiles/user.png",
-                EmailConfirmed = true,
-                NormalizedUserName = "USER@BLOG.COM",
-                NormalizedEmail = "USER@BLOG.COM"
-            };
-            if (userManager.Users.All(u => u.UserName != normalUser.UserName))
-            {
-                var user = await userManager.FindByEmailAsync(normalUser.Email);
-                if (user == null)
+                var normalUser = new ApplicationUser
                 {
-                    var result = await userManager.CreateAsync(normalUser, "User123!");
-                    if (result.Succeeded)
+                    UserName = $"user{i}@blog.com",
+                    Email = $"user{i}@blog.com",
+                    ProfilePicture = $"/images/profiles/user{i}.png",
+                    EmailConfirmed = true,
+                    NormalizedUserName = $"USER{i}@BLOG.COM",
+                    NormalizedEmail = $"USER{i}@BLOG.COM"
+                };
+                if (userManager.Users.All(u => u.UserName != normalUser.UserName))
+                {
+                    var user = await userManager.FindByEmailAsync(normalUser.Email);
+                    if (user == null)
                     {
-                        await userManager.AddToRoleAsync(normalUser, "User");
+                        var result = await userManager.CreateAsync(normalUser, "User123!");
+                        if (result.Succeeded)
+                        {
+                            await userManager.AddToRoleAsync(normalUser, "User");
+                        }
                     }
                 }
             }
@@ -127,19 +130,129 @@ namespace BlogClubeLeitura.Data
         {
             if (!context.Books.Any())
             {
-                var books = new List<Book>();
-                for (int i = 1; i <= 20; i++)
+                var books = new List<Book>
                 {
-                    books.Add(
-                      new Book
-                      {
-                          Title = $"Book{i}",
-                          Author = $"Author{i}",
-                          Description = $"Description{i}",
-                          PublishedDate = DateTime.UtcNow,
-                          CoverImagePath = "/images/books/default.png"
-                      });
-                }
+                    new Book
+                    {
+                        Title = "O Segredo nas Sombras",
+                        Author = "Morgana Moraes",
+                        Description = "Este livro é um suspense aterrorizante que mergulha em eventos misteriosos ocorridos em uma data específica em março de 1996.",
+                        PublishedYear = 2023,
+                        CoverImagePath = "/images/books/1.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "A Modista Vintage",
+                        Author = "Jaqueline Silva",
+                        Description = "Este livro foca no retorno da moda vintage, fornecendo insights e segredos para mulheres modernas que apreciam e querem incorporar estilos vintage em seu guarda-roupa.",
+                        PublishedYear = 2022,
+                        CoverImagePath = "/images/books/2.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "A Rapariga no Abismo",
+                        Author = "Charlie Gallagher",
+                        Description = "Uma história envolvente sobre uma garota que foge de sua vida problemática e luta pela sobrevivência. O livro combina elementos de mistério e suspense.",
+                        PublishedYear = 2020,
+                        CoverImagePath = "/images/books/3.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Robin Williams: A Biografia",
+                        Author = "Emily Herbert",
+                        Description = "Esta biografia explora a vida e a carreira do amado ator e comediante Robin Williams, oferecendo insights sobre suas experiências pessoais e profissionais.",
+                        PublishedYear = 2014,
+                        CoverImagePath = "/images/books/4.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Viagem ao Centro da Terra",
+                        Author = "Júlio Verne",
+                        Description = "Um romance clássico de ficção científica que leva os leitores em uma jornada aventureira ao centro da Terra, repleta de encontros imaginativos e emocionantes.",
+                        PublishedYear = 1864,
+                        CoverImagePath = "/images/books/5.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Harry Potter e a Pedra Filosofal",
+                        Author = "J.K. Rowling",
+                        Description = "O primeiro livro da série Harry Potter, apresentando o jovem bruxo Harry Potter e suas aventuras iniciais na Escola de Magia e Bruxaria de Hogwarts.",
+                        PublishedYear = 1997,
+                        CoverImagePath = "/images/books/6.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Harry Potter e a Câmara Secreta",
+                        Author = "J.K. Rowling",
+                        Description = "O segundo livro da série Harry Potter, onde Harry retorna a Hogwarts e desvenda o mistério da Câmara Secreta.",
+                        PublishedYear = 1998,
+                        CoverImagePath = "/images/books/7.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Harry Potter and the Deathly Hallows",
+                        Author = "J.K. Rowling",
+                        Description = "O livro final da série Harry Potter, onde Harry enfrenta sua batalha final contra Voldemort.",
+                        PublishedYear = 2007,
+                        CoverImagePath = "/images/books/8.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Avaliando a Inteligência Emocional",
+                        Author = "Steve Simmons e John C. Simmons Jr.",
+                        Description = "Este livro explora o conceito de inteligência emocional, fornecendo insights e estratégias para entender e melhorar as capacidades emocionais para o sucesso pessoal e profissional.",
+                        PublishedYear = 2003,
+                        CoverImagePath = "/images/books/9.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Aprenda a Programar C#",
+                        Author = "Fabiela Ventavoli",
+                        Description = "Um guia para aprender programação em C#, cobrindo os tópicos básicos e avançados para ajudar os leitores a desenvolver aplicações usando o Microsoft Visual Studio.",
+                        PublishedYear = 2010,
+                        CoverImagePath = "/images/books/10.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Python Levado a Sério",
+                        Author = "Julien Danjou",
+                        Description = "Conselhos de um faixa-preta sobre implantação, escalabilidade, testes e outros assuntos relacionados a Python.",
+                        PublishedYear = 2016,
+                        CoverImagePath = "/images/books/11.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Clean Code",
+                        Author = "Robert C. Martin",
+                        Description = "Um manual de artesanato de software ágil que oferece princípios e melhores práticas para escrever código limpo e sustentável.",
+                        PublishedYear = 2008,
+                        CoverImagePath = "/images/books/12.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Cosmos",
+                        Author = "Carl Sagan",
+                        Description = "Uma exploração do universo, cobrindo as origens da vida e a compreensão humana do cosmos.",
+                        PublishedYear = 1980,
+                        CoverImagePath = "/images/books/13.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "Está a Brincar, Sr. Feynman!",
+                        Author = "Richard P. Feynman",
+                        Description = "Uma coleção de anedotas da vida do físico Richard Feynman, mostrando sua natureza curiosa e brincalhona.",
+                        PublishedYear = 1985,
+                        CoverImagePath = "/images/books/14.jpg"
+                    },
+                    new Book
+                    {
+                        Title = "O Mundo de Sofia",
+                        Author = "Jostein Gaarder",
+                        Description = "Um romance que serve como um guia introdutório à filosofia, seguindo uma jovem chamada Sofia que recebe cartas misteriosas sobre questões filosóficas.",
+                        PublishedYear = 1991,
+                        CoverImagePath = "/images/books/15.jpg"
+                    }
+                };
 
                 context.Books.AddRange(books);
                 context.SaveChanges();
@@ -155,28 +268,49 @@ namespace BlogClubeLeitura.Data
 
                 if (books.Any() && users.Any())
                 {
-                    foreach (var user in users)
+                    var random = new Random();
+                    var comments = new List<string>
+            {
+                "Uma leitura cativante, não consegui parar!",
+                "Achei a trama um pouco lenta no início, mas depois melhorou.",
+                "O desenvolvimento dos personagens neste livro é fenomenal.",
+                "Uma trama intrigante com reviravoltas inesperadas.",
+                "O estilo de escrita do autor é imersivo e envolvente.",
+                "Adorei o contexto histórico deste livro.",
+                "Um pouco técnico demais para o meu gosto, mas ainda assim informativo.",
+                "Os temas explorados neste livro são muito relevantes hoje.",
+                "Uma história linda e comovente.",
+                "Este livro mudou minha perspectiva sobre muitas coisas."
+            };
+
+                    foreach (var book in books)
                     {
-                        foreach (var book in books)
+                        for (int i = 0; i < 10; i++)
                         {
-                            for (int i = 1; i <= 10; i++)
-                            {
-                                context.Posts.Add(
-                                  new Post
+                            var commentIndex = random.Next(comments.Count);
+                            var randomUserIndex = random.Next(users.Count);
+                            var randomUser = users[randomUserIndex];
+                            var randomYear = DateTime.UtcNow.Year - random.Next(0, 5);
+                            var randomMonth = random.Next(1, 13);
+                            var randomDay = random.Next(1, DateTime.DaysInMonth(randomYear, randomMonth) + 1);
+
+                            var randomDate = new DateTime(randomYear, randomMonth, randomDay);
+
+                            context.Posts.Add(
+                              new Post
+                              {
+                                  Comment = comments[commentIndex],
+                                  PostedDate = randomDate,
+                                  BookId = book.Id,
+                                  UserId = randomUser.Id,
+                                  Rating = new Rating
                                   {
-                                      Comment = $"This is post {i} about {book.Title} by {user.UserName}.",
-                                      PostedDate = DateTime.UtcNow,
+                                      Stars = random.Next(1, 6),
+                                      RatingDate = randomDate,
                                       BookId = book.Id,
-                                      UserId = user.Id,
-                                      Rating = new Rating
-                                      {
-                                          Stars = new Random().Next(1, 6), // Random rating between 1 and 5
-                                          RatingDate = DateTime.UtcNow,
-                                          BookId = book.Id,
-                                          UserId = user.Id
-                                      }
-                                  });
-                            }
+                                      UserId = randomUser.Id
+                                  }
+                              });
                         }
                     }
                     context.SaveChanges();

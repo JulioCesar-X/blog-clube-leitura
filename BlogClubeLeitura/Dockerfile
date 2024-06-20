@@ -1,17 +1,18 @@
 # Stage 1: Build the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /app
 
 # Copy the project file and restore dependencies
-COPY ["BlogClubeLeitura.csproj", "."]
-RUN dotnet restore "BlogClubeLeitura.csproj"
+COPY ["BlogClubeLeitura/BlogClubeLeitura.csproj", "BlogClubeLeitura/"]
+RUN dotnet restore "BlogClubeLeitura/BlogClubeLeitura.csproj"
 
 # Copy the remaining project files and build the application
-COPY . .
-RUN dotnet build -c Release -o /app/build
+COPY BlogClubeLeitura/. BlogClubeLeitura/
+WORKDIR /app/BlogClubeLeitura
+RUN dotnet build "BlogClubeLeitura.csproj" -c Release -o /app/build
 
 # Publish the application
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish "BlogClubeLeitura.csproj" -c Release -o /app/publish
 
 # Stage 2: Create the runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
@@ -28,5 +29,5 @@ EXPOSE 80
 EXPOSE 443
 
 # Define the entrypoint
-CMD /bin/bash -c 'while ! nc -z "postgres.railway.internal" 5432; do echo "Waiting for the database..."; sleep 1; done; \
+CMD /bin/bash -c 'while ! nc -z "$PGHOST" "$PGPORT"; do echo "Waiting for the database..."; sleep 1; done; \
   if [ "$SEED_DATABASE" = "true" ]; then dotnet ef database update; fi; dotnet BlogClubeLeitura.dll'

@@ -108,7 +108,7 @@ namespace BlogClubeLeitura.Controllers
 
         // POST: Books/Create
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Author,Description,PublishedDate")] Book book, IFormFile CoverImage)
+        public async Task<IActionResult> Create([Bind("Id,Title,Author,Description,PublishedYear")] Book book, IFormFile CoverImage)
         {
             if (ModelState.IsValid)
             {
@@ -151,7 +151,7 @@ namespace BlogClubeLeitura.Controllers
 
         // POST: Books/Edit/5
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Description,CoverImagePath,PublishedDate")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,Description,CoverImagePath,PublishedYear")] Book book)
         {
             if (id != book.Id)
             {

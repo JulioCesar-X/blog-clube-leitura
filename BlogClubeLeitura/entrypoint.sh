@@ -2,7 +2,7 @@
 
 # Esperar o banco de dados estar pronto
 echo "Aguardando pelo banco de dados..."
-while ! nc -z viaduct.proxy.rlwy.net 37314; do
+while ! nc -z db 5432; do
   sleep 1
 done
 echo "Banco de dados pronto."
