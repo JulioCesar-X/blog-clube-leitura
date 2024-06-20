@@ -24,7 +24,7 @@ body {
 }
 
 .background-blur {
-    filter: blur(8px);
+    filter: blur(2px);
 }
 
 .content-wrapper {
