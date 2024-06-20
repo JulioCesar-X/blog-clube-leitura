@@ -16,9 +16,6 @@
                         <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link text-light" asp-area="" asp-controller="Posts" asp-action="Index">Posts</a>
                     </li>
                     @if (User.IsInRole("Admin") || User.IsInRole("Gestor"))
@@ -45,9 +42,9 @@
                                 @User.Identity.Name
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
+                               
                                 <li>
-                                    <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="px-3">
+                                    <form asp-controller="Account" asp-action="Logout" class="px-3">
                                         <button type="submit" class="btn btn-link dropdown-item">Logout</button>
                                     </form>
                                 </li>

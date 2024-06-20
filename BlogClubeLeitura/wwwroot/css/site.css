@@ -1,27 +1,26 @@
 html, body {
-    height: 100%; /* Garantir que o corpo cubra toda a altura da página */
-    margin: 0; /* Remover margens padrão */
+    height: 100%;
+    margin: 0;
 }
 
 body {
     display: flex;
-    flex-direction: column; /* Estrutura flexível para organizar o cabeçalho, conteúdo principal e rodapé */
+    flex-direction: column;
     font-family: 'Gordita', Helvetica, sans-serif;
     background-image: url('/images/fundo.jpg');
     background-size: cover;
-    background-attachment: fixed; /* Fixar a imagem de fundo para não rolar com a página */
+    background-attachment: fixed;
     padding-top: 60px;
 }
 
 .navbar {
-    position: fixed; /* Deixa a barra de navegação fixa no topo */
-    width: 100%; /* Garante cobertura total da largura */
-    z-index: 1000; /* Certifique-se de que está acima de outros elementos */
-
+    position: fixed;
+    width: 100%;
+    z-index: 1000; 
 }
 
 .footer {
-    margin-top: auto; /* Empurra o rodapé para a parte inferior */
+    margin-top: auto;
     text-align: center;
     color:#fff;
 }
@@ -39,9 +38,9 @@ h3,h2 {
 }
 
 .container {
-    padding-top: 70px; /* Espaço para a navbar não sobrepor o conteúdo */
+    padding-top: 70px;
     width: 100%;
-    max-width: 100%; /* Impede a extensão além das bordas */
+    max-width: 100%;
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
@@ -55,15 +54,15 @@ h3,h2 {
 }
 .login-container {
     display: flex;
-    justify-content: center; /* Alinha horizontalmente ao centro */
-    align-items: center; /* Alinha verticalmente ao centro */
-    min-height: 100vh;  Altura mínima do viewport 
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 
 }
 
 .login-form {
-    width: 100%; /* Ocupa 100% da largura da coluna */
-    max-width: 50%; /* Largura máxima do formulário */
+    width: 100%;
+    max-width: 50%;
     padding: 15px;
     margin: auto;
     
@@ -85,6 +84,10 @@ h3,h2 {
 .form-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza horizontalmente em contêineres flex */
-    justify-content: center; /* Opcional, se você também quiser centralizar verticalmente */
+    align-items: center; 
+    justify-content: center;
+}
+
+a{
+    color: #fff;
 }
