@@ -18,87 +18,98 @@
     </div>
 
     <div class="row">
-        @foreach (var book in Model)
+        @if (!Model.Any())
         {
-            <div class="col-md-6 mb-4">
-                <div class="card" style="background: rgba(0, 123, 255, 0.1);">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="me-3">
-                                <img src="@book.CoverImagePath" alt="@book.BookTitle" class="img-thumbnail" style="width: 150px; height: 200px; object-fit: cover;">
-                            </div>
-                            <div>
-                                <h2 style="color: white;">@book.BookTitle</h2>
-                                <canvas id="chart-@book.BookId"></canvas>
+            <div class="col-12">
+                <div class="alert alert-warning text-center" role="alert">
+                    Nenhum resultado encontrado para a pesquisa: <strong>@searchQuery</strong>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var book in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card" style="background: rgba(0, 123, 255, 0.1);">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <img src="@book.CoverImagePath" alt="@book.BookTitle" class="img-thumbnail" style="width: 150px; height: 200px; object-fit: cover;">
+                                </div>
+                                <div>
+                                    <h2 style="color: white;">@book.BookTitle</h2>
+                                    <canvas id="chart-@book.BookId"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        var ctx = document.getElementById('chart-@book.BookId').getContext('2d');
-                        new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['5 stars', '4 stars', '3 stars', '2 stars', '1 star'],
-                                datasets: [{
-                                    label: 'Number of Ratings',
-                                    data: [@book.FiveStarsCount, @book.FourStarsCount, @book.ThreeStarsCount, @book.TwoStarsCount, @book.OneStarCount],
-                                    backgroundColor: [
-                                        'rgba(255, 206, 86, 0.9)',
-                                        'rgba(54, 162, 235, 0.9)',
-                                        'rgba(75, 192, 192, 0.9)',
-                                        'rgba(153, 102, 255, 0.9)',
-                                        'rgba(255, 99, 132, 0.9)'
-                                    ],
-                                    borderColor: [
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 99, 132, 1)'
-                                    ],
-                                    borderWidth: 2
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        ticks: {
-                                            color: 'white',
-                                            font: {
-                                                size: 14,
-                                                weight: 'bold'
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var ctx = document.getElementById('chart-@book.BookId').getContext('2d');
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['5 stars', '4 stars', '3 stars', '2 stars', '1 star'],
+                                    datasets: [{
+                                        label: 'Number of Ratings',
+                                        data: [@book.FiveStarsCount, @book.FourStarsCount, @book.ThreeStarsCount, @book.TwoStarsCount, @book.OneStarCount],
+                                        backgroundColor: [
+                                            'rgba(255, 206, 86, 0.9)',
+                                            'rgba(54, 162, 235, 0.9)',
+                                            'rgba(75, 192, 192, 0.9)',
+                                            'rgba(153, 102, 255, 0.9)',
+                                            'rgba(255, 99, 132, 0.9)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 99, 132, 1)'
+                                        ],
+                                        borderWidth: 2
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                color: 'white',
+                                                font: {
+                                                    size: 14,
+                                                    weight: 'bold'
+                                                }
+                                            }
+                                        },
+                                        x: {
+                                            ticks: {
+                                                color: 'white',
+                                                font: {
+                                                    size: 14,
+                                                    weight: 'bold'
+                                                }
                                             }
                                         }
                                     },
-                                    x: {
-                                        ticks: {
-                                            color: 'white',
-                                            font: {
-                                                size: 14,
-                                                weight: 'bold'
-                                            }
-                                        }
-                                    }
-                                },
-                                plugins: {
-                                    legend: {
-                                        labels: {
-                                            color: 'white',
-                                            font: {
-                                                size: 16,
-                                                weight: 'bold'
+                                    plugins: {
+                                        legend: {
+                                            labels: {
+                                                color: 'white',
+                                                font: {
+                                                    size: 16,
+                                                    weight: 'bold'
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
+                            });
                         });
-                    });
-                </script>
-            </div>
+                    </script>
+                </div>
+            }
         }
     </div>
 

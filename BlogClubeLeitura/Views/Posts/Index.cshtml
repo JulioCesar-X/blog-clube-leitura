@@ -14,88 +14,105 @@
         <div class="col-lg-8">
             <form asp-action="Index" method="get" class="input-group search-form">
                 <select name="month" class="form-control">
-                    <option value="">Select Month</option>
+                    <option value="">Selecione o Mês</option>
                     @{
-                        var months = new[] 
+                        var months = new[]
                         {
-                            new { Value = "01", Text = "January" },
-                            new { Value = "02", Text = "February" },
-                            new { Value = "03", Text = "March" },
-                            new { Value = "04", Text = "April" },
-                            new { Value = "05", Text = "May" },
-                            new { Value = "06", Text = "June" },
-                            new { Value = "07", Text = "July" },
-                            new { Value = "08", Text = "August" },
-                            new { Value = "09", Text = "September" },
-                            new { Value = "10", Text = "October" },
-                            new { Value = "11", Text = "November" },
-                            new { Value = "12", Text = "December" }
+                            new { Value = "01", Text = "Janeiro" },
+                            new { Value = "02", Text = "Fevereiro" },
+                            new { Value = "03", Text = "Março" },
+                            new { Value = "04", Text = "Abril" },
+                            new { Value = "05", Text = "Maio" },
+                            new { Value = "06", Text = "Junho" },
+                            new { Value = "07", Text = "Julho" },
+                            new { Value = "08", Text = "Agosto" },
+                            new { Value = "09", Text = "Setembro" },
+                            new { Value = "10", Text = "Outubro" },
+                            new { Value = "11", Text = "Novembro" },
+                            new { Value = "12", Text = "Dezembro" }
                         };
 
                         foreach (var month in months)
                         {
-                            <option value="@(selectedMonth == month.Value ? month.Value : "")">
-                                @month.Text
-                            </option>
+                            <option value="@month.Value" selected="@(month.Value == selectedMonth ? "selected" : "")">@month.Text</option>
                         }
                     }
                 </select>
-                <input type="text" name="year" class="form-control" placeholder="Year (e.g., 2024)" value="@year">
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <input type="text" name="year" class="form-control" placeholder="Ano (ex.: 2024)" value="@year">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
             </form>
         </div>
     </div>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
     <div class="row justify-content-center">
         <div class="col-12">
-            <div class="table-responsive">
-                <table class="table" style="background-color: rgba(0, 123, 255, 0.1);">
-                    <thead class="thead-dark" style="position: sticky; top: 0; background-color: rgba(0, 123, 255, 0.1);">
-                        <tr>
-                            <th>Comment</th>
-                            <th>Book</th>
-                            <th>User</th>
-                            <th>Posted Date</th>
-                            <th>Rating</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    Nenhum post encontrado para os filtros aplicados.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table" style="background-color: rgba(0, 123, 255, 0.1);">
+                        <thead class="thead-dark" style="position: sticky; top: 0; background-color: rgba(0, 123, 255, 0.1);">
                             <tr>
-                                <td>@item.Comment</td>
-                                <td>@item.Book?.Title</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <a href="#">
-                                            <img src="@item.User?.ProfilePicture" class="rounded-circle me-2" style="width: 40px; height: 40px;" alt="@item.User?.UserName's Profile Picture">
-                                        </a>
-                                        <a href="#">@item.User?.UserName</a>
-                                    </div>
-                                </td>
-                                <td>@item.PostedDate.ToShortDateString()</td>
-                                <td>
-                                    @if (item.Rating != null)
-                                    {
-                                        <div class="star-rating">
-                                            @for (var i = 0; i < item.Rating.Stars; i++)
-                                            {
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill star-icon" viewBox="0 0 16 16">
-                                                    <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
-                                                </svg>
-                                            }
-                                        </div>
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
+                                <th>Comentário</th>
+                                <th>Livro</th>
+                                <th>Usuário</th>
+                                <th>Data da Postagem</th>
+                                <th>Avaliação</th>
+                                <th>Ações</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Comment</td>
+                                    <td>@item.Book?.Title</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <a href="#">
+                                                <img src="@item.User?.ProfilePicture" class="rounded-circle me-2" style="width: 40px; height: 40px;" alt="@item.User?.UserName's Profile Picture">
+                                            </a>
+                                            <a href="#">@item.User?.UserName</a>
+                                        </div>
+                                    </td>
+                                    <td>@item.PostedDate.ToShortDateString()</td>
+                                    <td>
+                                        @if (item.Rating != null)
+                                        {
+                                            <div class="star-rating">
+                                                @for (var i = 0; i < item.Rating.Stars; i++)
+                                                {
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill star-icon" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.396.2-.833-.149-.746-.592l.83-4.73-3.522-3.356c-.33-.314-.158-.888.283-.95l4.898-.696 2.086-4.223c.197-.4.73-.4.927 0l2.086 4.223 4.898.696c.441.062.613.636.283.95l-3.522 3.356.83 4.73c.087.443-.35.792-.746.592L8 13.187l-4.389 2.256z" />
+                                                    </svg>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <form asp-action="DeletePost" method="post">
+                                            <input type="hidden" name="postId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-danger btn-delete">Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>

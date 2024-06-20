@@ -7,31 +7,53 @@ body {
     display: flex;
     flex-direction: column;
     font-family: 'Gordita', Helvetica, sans-serif;
+    padding-top: 60px;
+    overflow: hidden; /* Prevents scrolling */
+}
+
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('/images/fundo.jpg');
     background-size: cover;
     background-attachment: fixed;
-    padding-top: 60px;
+    z-index: -1; /* Ensure it stays behind content */
+}
+
+.background-blur {
+    filter: blur(8px);
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Allows content scrolling */
 }
 
 .navbar {
     position: fixed;
     width: 100%;
-    z-index: 1000; 
+    z-index: 1000;
 }
 
 .footer {
     margin-top: auto;
     text-align: center;
-    color:#fff;
+    color: #fff;
 }
 
 h1 {
     font-size: 5.5rem;
     font-weight: bold;
-    color: #ffff
+    color: #fff;
 }
 
-h3,h2 {
+h2, h3 {
     color: #fff;
     font-weight: bold;
     font-size: 2rem;
@@ -52,42 +74,28 @@ h3,h2 {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
 }
-.login-container {
+
+.login-container, .register-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-
 }
 
-.login-form {
+.login-form, .register-form {
     width: 100%;
     max-width: 50%;
     padding: 15px;
     margin: auto;
-    
-}
-.register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.register-form {
-    width: 100%;
-    max-width: 50%;
-    padding: 20px;
-
 }
 
 .form-container {
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
 }
 
-a{
+a {
     color: #fff;
 }

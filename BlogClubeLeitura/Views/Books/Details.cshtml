@@ -1,4 +1,5 @@
-﻿@model BlogClubeLeitura.Models.Book
+﻿@using System.Security.Claims
+@model BlogClubeLeitura.Models.Book
 
 @{
     ViewData["Title"] = "Book Details";
@@ -8,6 +9,14 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success text-center" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
             <div class="card mb-4 position-relative">
                 <img id="bookImage" src="@Model.CoverImagePath" class="card-img-top" alt="@Model.Title">
                 <div class="card-body">
@@ -107,7 +116,7 @@
             }
             else
             {
-                <p>No posts available for this book.</p>
+                <p class="alert alert-warning text-center">Nenhum post encontrado para este livro.</p>
             }
 
             <div class="d-flex justify-content-center my-4">
@@ -259,7 +268,11 @@
         .card-img-top {
             width: 100%;
             height: 100%;
+            max-width: 400px;
             object-fit: cover;
+            transition: transform 0.6s ease-out;
+            margin: 0 auto;
+            padding: 15px;
         }
 
         .card {

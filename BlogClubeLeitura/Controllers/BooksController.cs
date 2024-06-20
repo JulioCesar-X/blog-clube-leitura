@@ -41,6 +41,11 @@ namespace BlogClubeLeitura.Controllers
             }
 
             ViewData["searchQuery"] = searchQuery;
+
+            // Passar mensagem de feedback para a View
+            ViewBag.FeedbackMessage = TempData["FeedbackMessage"] as string;
+            ViewBag.FeedbackError = TempData["FeedbackError"] as string;
+
             return View(pagedBooks);
         }
 
@@ -49,7 +54,8 @@ namespace BlogClubeLeitura.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
 
             var book = await _context.Books
@@ -61,7 +67,8 @@ namespace BlogClubeLeitura.Controllers
 
             if (book == null)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
 
             book.ModeRating = await CalculateModeRatingAsync(book.Id);
@@ -95,6 +102,7 @@ namespace BlogClubeLeitura.Controllers
             {
                 _context.Posts.Remove(post);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Post excluído com sucesso.";
             }
 
             return RedirectToAction(nameof(Details), new { id = post?.BookId });
@@ -128,6 +136,7 @@ namespace BlogClubeLeitura.Controllers
 
                 _context.Add(book);
                 await _context.SaveChangesAsync();
+                TempData["FeedbackMessage"] = "Livro criado com sucesso.";
                 return RedirectToAction(nameof(Index));
             }
             return View(book);
@@ -138,13 +147,15 @@ namespace BlogClubeLeitura.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
 
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
             return View(book);
         }
@@ -155,7 +166,8 @@ namespace BlogClubeLeitura.Controllers
         {
             if (id != book.Id)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
 
             if (ModelState.IsValid)
@@ -164,12 +176,14 @@ namespace BlogClubeLeitura.Controllers
                 {
                     _context.Update(book);
                     await _context.SaveChangesAsync();
+                    TempData["FeedbackMessage"] = "Livro atualizado com sucesso.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!BookExists(book.Id))
                     {
-                        return NotFound();
+                        TempData["FeedbackError"] = "Livro não encontrado.";
+                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -186,14 +200,16 @@ namespace BlogClubeLeitura.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
 
             var book = await _context.Books
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
-                return NotFound();
+                TempData["FeedbackError"] = "Livro não encontrado.";
+                return RedirectToAction(nameof(Index));
             }
 
             return View(book);
@@ -208,6 +224,11 @@ namespace BlogClubeLeitura.Controllers
             {
                 _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
+                TempData["FeedbackMessage"] = "Livro excluído com sucesso.";
+            }
+            else
+            {
+                TempData["FeedbackError"] = "Livro não encontrado.";
             }
             return RedirectToAction(nameof(Index));
         }

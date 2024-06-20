@@ -5,58 +5,84 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var userRoles = ViewBag.UserRoles as Dictionary<string, List<string>>;
     var roles = ViewBag.Roles as List<string>;
+    var searchQuery = Context.Request.Query["searchQuery"].ToString();
 }
 
 <h1 class="text-center my-4">Manage Users</h1>
 
 <div class="container">
+    <div class="row mb-3 justify-content-center">
+        <div class="col-lg-8">
+            <form asp-action="Index" method="get" class="input-group search-form">
+                <input type="text" name="searchQuery" class="form-control" placeholder="Search by username or email..." value="@searchQuery">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    @if (TempData["FeedbackMessage"] != null)
+    {
+        <div class="alert alert-info text-center" role="alert">
+            @TempData["FeedbackMessage"]
+        </div>
+    }
+
     <div class="row justify-content-center">
         <div class="col-12">
-            <div class="table-responsive">
-                <table class="table" style="background-color: rgba(0, 123, 255, 0.1);">
-                    <thead class="thead-dark" style="position: sticky; top: 0; background-color: rgba(0, 123, 255, 0.1);">
-                        <tr>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Change Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model)
-                        {
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    No users found.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table" style="background-color: rgba(0, 123, 255, 0.1);">
+                        <thead class="thead-dark" style="position: sticky; top: 0; background-color: rgba(0, 123, 255, 0.1);">
                             <tr>
-                                <td>@user.UserName</td>
-                                <td>@user.Email</td>
-                                <td>
-                                    @foreach (var role in userRoles[user.Id])
-                                    {
-                                        <span class="badge bg-info text-dark">@role</span>
-                                    }
-                                </td>
-                                <td>
-                                    <form asp-action="UpdateRole" method="post" class="d-inline">
-                                        <input type="hidden" name="userId" value="@user.Id" />
-                                        <select name="newRole" class="form-select form-select-sm" onchange="this.form.submit()">
-                                            @foreach (var role in roles)
-                                            {
-                                                <option value="@role" selected="@(userRoles[user.Id].Contains(role) ? "selected" : "")">@role</option>
-                                            }
-                                        </select>
-                                    </form>
-                                </td>
-                                <td>
-                                    <form asp-action="Delete" method="post" class="d-inline">
-                                        <input type="hidden" name="userId" value="@user.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
-                                </td>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Change Role</th>
+                                <th>Actions</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>@user.UserName</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        @foreach (var role in userRoles[user.Id])
+                                        {
+                                            <span class="badge bg-info text-dark">@role</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <form asp-action="UpdateRole" method="post" class="d-inline">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <select name="newRole" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                @foreach (var role in roles)
+                                                {
+                                                    <option value="@role" selected="@(userRoles[user.Id].Contains(role) ? "selected" : "")">@role</option>
+                                                }
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -84,5 +110,40 @@
         .badge {
             margin-right: 5px;
         }
+
+        .search-form {
+            background: rgba(0, 123, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+        }
+
+            .search-form:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+                transition: background 0.9s ease-in-out;
+            }
+
+        .form-control {
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+            .form-control:focus {
+                box-shadow: none;
+            }
+
+        .btn-primary {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #fff;
+                border: none;
+                transition: background 0.9s ease-in-out;
+                color: #000000;
+            }
     </style>
 }

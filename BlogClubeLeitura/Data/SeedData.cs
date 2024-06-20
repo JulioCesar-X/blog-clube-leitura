@@ -138,7 +138,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Morgana Moraes",
                         Description = "Este livro é um suspense aterrorizante que mergulha em eventos misteriosos ocorridos em uma data específica em março de 1996.",
                         PublishedYear = 2023,
-                        CoverImagePath = "/images/books/1.jpg"
+                        CoverImagePath = "/images/books/1.jpeg"
                     },
                     new Book
                     {
@@ -146,7 +146,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Jaqueline Silva",
                         Description = "Este livro foca no retorno da moda vintage, fornecendo insights e segredos para mulheres modernas que apreciam e querem incorporar estilos vintage em seu guarda-roupa.",
                         PublishedYear = 2022,
-                        CoverImagePath = "/images/books/2.jpg"
+                        CoverImagePath = "/images/books/2.jpeg"
                     },
                     new Book
                     {
@@ -154,7 +154,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Charlie Gallagher",
                         Description = "Uma história envolvente sobre uma garota que foge de sua vida problemática e luta pela sobrevivência. O livro combina elementos de mistério e suspense.",
                         PublishedYear = 2020,
-                        CoverImagePath = "/images/books/3.jpg"
+                        CoverImagePath = "/images/books/3.jpeg"
                     },
                     new Book
                     {
@@ -162,7 +162,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Emily Herbert",
                         Description = "Esta biografia explora a vida e a carreira do amado ator e comediante Robin Williams, oferecendo insights sobre suas experiências pessoais e profissionais.",
                         PublishedYear = 2014,
-                        CoverImagePath = "/images/books/4.jpg"
+                        CoverImagePath = "/images/books/4.jpeg"
                     },
                     new Book
                     {
@@ -170,7 +170,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Júlio Verne",
                         Description = "Um romance clássico de ficção científica que leva os leitores em uma jornada aventureira ao centro da Terra, repleta de encontros imaginativos e emocionantes.",
                         PublishedYear = 1864,
-                        CoverImagePath = "/images/books/5.jpg"
+                        CoverImagePath = "/images/books/5.jpeg"
                     },
                     new Book
                     {
@@ -178,7 +178,7 @@ namespace BlogClubeLeitura.Data
                         Author = "J.K. Rowling",
                         Description = "O primeiro livro da série Harry Potter, apresentando o jovem bruxo Harry Potter e suas aventuras iniciais na Escola de Magia e Bruxaria de Hogwarts.",
                         PublishedYear = 1997,
-                        CoverImagePath = "/images/books/6.jpg"
+                        CoverImagePath = "/images/books/6.jpeg"
                     },
                     new Book
                     {
@@ -186,7 +186,7 @@ namespace BlogClubeLeitura.Data
                         Author = "J.K. Rowling",
                         Description = "O segundo livro da série Harry Potter, onde Harry retorna a Hogwarts e desvenda o mistério da Câmara Secreta.",
                         PublishedYear = 1998,
-                        CoverImagePath = "/images/books/7.jpg"
+                        CoverImagePath = "/images/books/7.jpeg"
                     },
                     new Book
                     {
@@ -194,7 +194,7 @@ namespace BlogClubeLeitura.Data
                         Author = "J.K. Rowling",
                         Description = "O livro final da série Harry Potter, onde Harry enfrenta sua batalha final contra Voldemort.",
                         PublishedYear = 2007,
-                        CoverImagePath = "/images/books/8.jpg"
+                        CoverImagePath = "/images/books/8.jpeg"
                     },
                     new Book
                     {
@@ -202,7 +202,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Steve Simmons e John C. Simmons Jr.",
                         Description = "Este livro explora o conceito de inteligência emocional, fornecendo insights e estratégias para entender e melhorar as capacidades emocionais para o sucesso pessoal e profissional.",
                         PublishedYear = 2003,
-                        CoverImagePath = "/images/books/9.jpg"
+                        CoverImagePath = "/images/books/9.jpeg"
                     },
                     new Book
                     {
@@ -210,7 +210,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Fabiela Ventavoli",
                         Description = "Um guia para aprender programação em C#, cobrindo os tópicos básicos e avançados para ajudar os leitores a desenvolver aplicações usando o Microsoft Visual Studio.",
                         PublishedYear = 2010,
-                        CoverImagePath = "/images/books/10.jpg"
+                        CoverImagePath = "/images/books/10.jpeg"
                     },
                     new Book
                     {
@@ -218,7 +218,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Julien Danjou",
                         Description = "Conselhos de um faixa-preta sobre implantação, escalabilidade, testes e outros assuntos relacionados a Python.",
                         PublishedYear = 2016,
-                        CoverImagePath = "/images/books/11.jpg"
+                        CoverImagePath = "/images/books/11.jpeg"
                     },
                     new Book
                     {
@@ -226,7 +226,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Robert C. Martin",
                         Description = "Um manual de artesanato de software ágil que oferece princípios e melhores práticas para escrever código limpo e sustentável.",
                         PublishedYear = 2008,
-                        CoverImagePath = "/images/books/12.jpg"
+                        CoverImagePath = "/images/books/12.jpeg"
                     },
                     new Book
                     {
@@ -234,7 +234,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Carl Sagan",
                         Description = "Uma exploração do universo, cobrindo as origens da vida e a compreensão humana do cosmos.",
                         PublishedYear = 1980,
-                        CoverImagePath = "/images/books/13.jpg"
+                        CoverImagePath = "/images/books/13.jpeg"
                     },
                     new Book
                     {
@@ -242,7 +242,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Richard P. Feynman",
                         Description = "Uma coleção de anedotas da vida do físico Richard Feynman, mostrando sua natureza curiosa e brincalhona.",
                         PublishedYear = 1985,
-                        CoverImagePath = "/images/books/14.jpg"
+                        CoverImagePath = "/images/books/14.jpeg"
                     },
                     new Book
                     {
@@ -250,7 +250,7 @@ namespace BlogClubeLeitura.Data
                         Author = "Jostein Gaarder",
                         Description = "Um romance que serve como um guia introdutório à filosofia, seguindo uma jovem chamada Sofia que recebe cartas misteriosas sobre questões filosóficas.",
                         PublishedYear = 1991,
-                        CoverImagePath = "/images/books/15.jpg"
+                        CoverImagePath = "/images/books/15.jpeg"
                     }
                 };
 

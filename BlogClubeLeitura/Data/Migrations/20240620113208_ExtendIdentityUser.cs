@@ -62,7 +62,7 @@ namespace BlogClubeLeitura.Data.Migrations
                     Author = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     CoverImagePath = table.Column<string>(type: "text", nullable: true),
-                    PublishedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PublishedYear = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -108,8 +108,8 @@ namespace BlogClubeLeitura.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("PublishedDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("PublishedYear")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()

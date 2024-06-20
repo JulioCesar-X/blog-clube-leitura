@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlogClubeLeitura.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240617192424_ExtendIdentityUser")]
+    [Migration("20240620113208_ExtendIdentityUser")]
     partial class ExtendIdentityUser
     {
         /// <inheritdoc />
@@ -111,8 +111,8 @@ namespace BlogClubeLeitura.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("PublishedDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<int>("PublishedYear")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()

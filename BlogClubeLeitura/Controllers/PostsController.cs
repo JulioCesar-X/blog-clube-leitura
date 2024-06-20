@@ -36,13 +36,18 @@ namespace BlogClubeLeitura.Controllers
                 postsQuery = postsQuery.Where(p => p.UserId == userId);
             }
 
-            if (!string.IsNullOrEmpty(month))
+            if (!string.IsNullOrEmpty(month) && !string.IsNullOrEmpty(year))
+            {
+                int monthNumber = int.Parse(month);
+                int yearNumber = int.Parse(year);
+                postsQuery = postsQuery.Where(p => p.PostedDate.Month == monthNumber && p.PostedDate.Year == yearNumber);
+            }
+            else if (!string.IsNullOrEmpty(month))
             {
                 int monthNumber = int.Parse(month);
                 postsQuery = postsQuery.Where(p => p.PostedDate.Month == monthNumber);
             }
-
-            if (!string.IsNullOrEmpty(year))
+            else if (!string.IsNullOrEmpty(year))
             {
                 int yearNumber = int.Parse(year);
                 postsQuery = postsQuery.Where(p => p.PostedDate.Year == yearNumber);
@@ -220,16 +225,16 @@ namespace BlogClubeLeitura.Controllers
             return View(post);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [Route("DeleteConfirmed/{id:int}")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeletePost(int postId)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.FindAsync(postId);
             if (post != null)
             {
                 _context.Posts.Remove(post);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Post excluído com sucesso.";
             }
             return RedirectToAction(nameof(Index));
         }
